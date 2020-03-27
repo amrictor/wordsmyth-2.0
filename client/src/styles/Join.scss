@@ -1,0 +1,25 @@
+@import "variables.scss";
+
+#join {
+    max-width: 600px;
+    .nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: 1;
+        .navitem{ 
+            padding: 20px;
+            font-size: 25px;
+            cursor: pointer;
+            &.selected {
+                background: $buttonColor;
+            }
+            &:hover {
+                text-decoration: underline;
+            }  
+        }
+    }
+    #form {
+        display: flex;
+        flex-direction: column;
+    }
+}

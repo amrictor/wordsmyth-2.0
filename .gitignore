@@ -1,0 +1,7 @@
+/client/package-lock.json
+/client/node_modules
+
+/server/.settings
+/server/target
+
+/.vscode

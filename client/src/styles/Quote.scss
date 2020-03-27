@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed&display=swap');
+@import './ColorTheory.scss';
+@import './variables.scss';
+
+@use "sass:color";
+
+
+:root {
+    --red: 0;
+    --green: 0;
+    --blue: 0;
+}
+
+
+.quoteBlock {
+    &.input {
+        cursor: pointer;
+        .box {
+            &:hover, :focus {
+                background: $buttonColor;
+            }
+        }
+    }
+    // margin: 20px;
+    display: flex;
+    padding: 8px 100px;
+
+    .box {
+        &.correct {
+            @include color_theory;
+            // color: white;
+        }
+        padding: 10px;
+        height: 0%;
+        min-width: 100%;
+        --red: 0;
+        --green: 0;
+        --blue: 0;
+        border: rgb(var(--red), var(--green), var(--blue)) 3px solid;
+        .bonus {
+            transform: scaleX(-1) translate(43px, -25%);
+            position: absolute;
+            
+            svg {
+                width: auto !important;
+            }
+            font-size: 30px;
+            width: auto !important;
+        }
+        .quote {
+            font-size: 20px;
+            text-align: center;
+            .player {
+                font-style: italic;
+            }
+        }
+    }
+    
+    .votes {
+        margin: 0px 5px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        // width: 10%;
+        .vote {
+            @include color_theory;
+            font-weight: 600;
+            padding: 4px 5px;
+            border-radius: 10px;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            position: relative;
+            margin: 1px 1px 1px 10px;
+            &:after {
+                content: "";
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 9px 8px 9px 0;
+                --border-alpha: calc((var(--perceived-lightness) - var(--border-threshold)) * -100);
+                border-color: transparent rgba(var(--red), var(--green), var(--blue), var(--border-alpha)) transparent transparent;
+                position: absolute;
+                left: -10px;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+            &:before {
+                // @include color_theory
+                content: "";
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 9px 8px 9px 0;
+                border-color: transparent rgba(calc(var(--red) - 50), calc(var(--green) - 50), calc(var(--blue) - 50), var(--border-alpha)) transparent transparent;
+                position: absolute;
+                left: -10px;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+        }
+    }
+}
