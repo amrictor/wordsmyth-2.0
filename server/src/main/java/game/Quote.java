@@ -62,6 +62,7 @@ public class Quote {
             return false; 
         } 
         Quote quote = (Quote) o;
+
         return this.origin.equals(quote.origin) 
             && this.beginning.equals(quote.beginning) 
             && this.end.equals(quote.end);

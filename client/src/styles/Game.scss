@@ -3,63 +3,101 @@
 #game {
     width: 100%;
     max-width:600px;
+    height: 100%;
+    margin: auto;
     display: flex;
     flex-direction: column;
+    transition: .5s;
     align-items: center;
-    justify-content: center;
-    padding: 20px 40px;
+    justify-content: space-between;
     * {
         width: 100%;
     }
     #header {
-        display: flex;
+        // display: flex;
         border-radius: 5px;
         padding: 3px 10px;
+        margin-bottom: 20px;
         @include color_theory;
-        #title {
-            justify-content: center;
-            align-self: center;
-        }
-        #info {
-            width: auto !important;
-            align-self: flex-end;
-            text-align: right;
-            #username {
-                display: flex;
-                flex-direction: row-reverse;
-                .judge {
-                    // display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 18px;
-                    width: 20px !important;
-                    margin: 2px 6px;
-                    svg { 
-                        margin: auto;
+        #top {
+            display: flex;
+            #title {
+                font-size: 200%;
+                justify-content: center;
+                align-self: center;
+            }
+            #timer {
+                font-size: 200%;
+                align-self: center;
+                text-align: center;
+    
+            }
+            #info {
+                width: auto !important;
+                align-self: flex-end;
+                text-align: right;
+                #username {
+                    display: flex;
+                    flex-direction: row-reverse;
+                    font-size: 100%;//18px;
+                    .judge {
+                        // display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 20px !important;
+                        margin: 2px 6px;
+                        svg { 
+                            margin: auto;
+                        }
                     }
                 }
-                // text-align: right;
+                #gameid {
+                    font-size: 200%;
+                    // text-align: right;
+                } 
             }
-            #gameid {
-                font-size: 30px;
-                // text-align: right;
-            } 
         }
+        
     }
     
     #waiting {
-        padding: 40px;
+        padding: 20px 20px 0px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        text-align: center;
         font-size: 20px;
+        button {
+            margin-top: 20px;
+        }
     }
-    
+    #winner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 20px;
+        .player {
+            @include color_theory;
+            margin-right: 5px;
+            max-width: 100px;
+            font-weight: 600;
+            padding: 4px 5px;
+            border-radius: 10px;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+    }
     #quoteorigin {
         font-size: 25px;
         align-self: flex-start;
+        margin-bottom: 20px;
+    }
+    #emptyquotes {
+        font-size: 25px;
+        align-self: flex-start;
+        text-align: center;
         margin: 20px 0px;
-
     }
 }

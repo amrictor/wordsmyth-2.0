@@ -1,6 +1,5 @@
 package server.status;
 
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +14,8 @@ import server.Request;
 public class GameStatus {
 
     private String type = "status";
-    private short phase;
+    private short phase = -1;
+    private short round = 0;
     private String gameId;
     private String color;
     private Player player;
@@ -23,14 +23,16 @@ public class GameStatus {
     private Quote[] quotes;
     private Player[] players;
     private List<Quote> playerQuotes;
+    private Player winner;
 
 
-    public GameStatus(GameStatus gs, short phase, Player player) {
+    public GameStatus(GameStatus gs, Player player) {
         this.gameId = gs.gameId;
         this.color = gs.color;
         this.players = gs.players;
+        this.phase = gs.phase;
+        this.round = gs.round;
         this.player = player;
-        this.phase = phase;
         if(phase==-1) { //joining
             if(player.isFirst()) { 
                 this.expectedRequest = new Request(gameId, "start");
@@ -70,12 +72,32 @@ public class GameStatus {
                 this.expectedRequest = new Request(gameId, "continue");
             }
         }
+        else if(phase==4) { //endgame
+            this.playerQuotes = null;
+            this.expectedRequest = new Request(gameId, "quit");
+            Arrays.sort(this.players);
+        }
     }
 
     public GameStatus(String gameId, Player[] players, String color) {
         this.gameId = gameId;
         this.players = players;
         this.color = color;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = (short) phase;
+    }
+    public short getPhase(){
+        return this.phase;
+    }
+
+    public void nextRound() {
+        this.round++;
+    }
+
+    public short getRound(){
+        return this.round;
     }
 
     public void countVotes() {
@@ -117,6 +139,10 @@ public class GameStatus {
         this.quotes = quotes;
     }
 
+    public Quote[] getQuotes() {
+        return this.quotes;
+    }
+
     public void setNextRequest(String action) {
         this.expectedRequest = new Request(gameId, action);
     }
@@ -131,7 +157,7 @@ public class GameStatus {
         Collections.shuffle(shuffledPlayers);
         this.playerQuotes = new ArrayList<Quote>();
         for (Player p : shuffledPlayers) {
-            this.playerQuotes.add(p.getQuote());
+            if(p.hasQuote()) this.playerQuotes.add(p.getQuote());
         }
 	} 
     

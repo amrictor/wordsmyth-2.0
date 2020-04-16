@@ -14,56 +14,89 @@
 
 .quoteBlock {
     &.input {
-        cursor: pointer;
         .box {
+            
             &:hover, :focus {
                 background: $buttonColor;
+                color: $buttonTextColor;
             }
         }
     }
-    // margin: 20px;
+    margin-left: -30px;
     display: flex;
-    padding: 8px 100px;
+    align-items: center;
+    padding: 8px 20px;
+    .bonus_quote {
+        flex-shrink: 0;
+        display: flex;
+        // justify-content: center;
+        align-items: center;
 
-    .box {
-        &.correct {
-            @include color_theory;
-            // color: white;
-        }
-        padding: 10px;
-        height: 0%;
-        min-width: 100%;
-        --red: 0;
-        --green: 0;
-        --blue: 0;
-        border: rgb(var(--red), var(--green), var(--blue)) 3px solid;
         .bonus {
-            transform: scaleX(-1) translate(43px, -25%);
-            position: absolute;
-            
+            &.hidden {
+                visibility: hidden;
+            }
+            transform: scaleX(-1);
             svg {
                 width: auto !important;
             }
             font-size: 30px;
-            width: auto !important;
         }
-        .quote {
-            font-size: 20px;
-            text-align: center;
-            .player {
-                font-style: italic;
+        .box {
+            &.correct {
+                @include color_theory;
+            }
+            margin: 0px;
+            font-size: 18px;
+            text-transform: none;
+
+            padding: 10px;
+            height: 0%;
+            min-width: 100%;
+
+            --red: 0;
+            --green: 0;
+            --blue: 0;
+            border: rgb(var(--red), var(--green), var(--blue)) 3px solid;
+            
+            .quote {
+                font-size: 20px;
+                text-align: center;
+                .player {
+                    font-style: italic;
+                }
             }
         }
     }
-    
+    @media only screen and (max-width: 800px) {
+        // margin-left:
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .votes {
+            flex-direction: row !important;
+            justify-content: center;
+            align-items: center;
+            width:100%;
+            margin-left: 30px !important;
+            
+            .vote {
+                max-width: 100px;
+                margin:4px !important;
+            }
+        }
+    }
     .votes {
+        @media only screen and (min-width: 800px) {
+            max-width: 100px;
+        }
         margin: 0px 5px;
+        margin-left: 35px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        // width: 10%;
         .vote {
             @include color_theory;
             font-weight: 600;
@@ -73,33 +106,35 @@
             text-align: center;
             position: relative;
             margin: 1px 1px 1px 10px;
-            &:after {
-                content: "";
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-width: 9px 8px 9px 0;
-                --border-alpha: calc((var(--perceived-lightness) - var(--border-threshold)) * -100);
-                border-color: transparent rgba(var(--red), var(--green), var(--blue), var(--border-alpha)) transparent transparent;
-                position: absolute;
-                left: -10px;
-                top: 0;
-                bottom: 0;
-                margin: auto;
-            }
-            &:before {
-                // @include color_theory
-                content: "";
-                width: 0;
-                height: 0;
-                border-style: solid;
-                border-width: 9px 8px 9px 0;
-                border-color: transparent rgba(calc(var(--red) - 50), calc(var(--green) - 50), calc(var(--blue) - 50), var(--border-alpha)) transparent transparent;
-                position: absolute;
-                left: -10px;
-                top: 0;
-                bottom: 0;
-                margin: auto;
+
+            @media only screen and (min-width: 800px) {
+                &:after {
+                    content: "";
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-width: 9px 8px 9px 0;
+                    --border-alpha: calc((var(--perceived-lightness) - var(--border-threshold)) * -100);
+                    border-color: transparent rgba(var(--red), var(--green), var(--blue), var(--border-alpha)) transparent transparent;
+                    position: absolute;
+                    left: -10px;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                }
+                &:before {
+                    content: "";
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-width: 9px 8px 9px 0;
+                    border-color: transparent rgba(calc(var(--red) - 50), calc(var(--green) - 50), calc(var(--blue) - 50), var(--border-alpha)) transparent transparent;
+                    position: absolute;
+                    left: -10px;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                }
             }
         }
     }

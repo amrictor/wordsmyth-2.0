@@ -6,8 +6,11 @@ import server.status.Response;
 import java.net.InetSocketAddress;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -19,14 +22,32 @@ import org.java_websocket.server.WebSocketServer;
 
 public class WebsocketServer extends WebSocketServer {
     private static int TCP_PORT = 4444;
-
+    private TimerTask garbageCollector;
+    private Timer timer = new Timer();
     private Map<String, Game> games; 
 
     public WebsocketServer() {
         super(new InetSocketAddress(TCP_PORT));
         games = new HashMap<>();
 
-        System.out.printf("Starting server on port %d\n", TCP_PORT);    
+        System.out.printf("Starting server on port %d\n", TCP_PORT); 
+
+        
+         garbageCollector = new TimerTask() {
+            public void run() {
+                Iterator<Game> it = games.values().iterator();
+                while(it.hasNext()) {
+                    Game g = it.next();
+                    if(!g.checkConnections()) it.remove();
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(
+            garbageCollector,
+            0,      // run first occurrence immediately
+            6000
+        ); 
+       
     }
 
     @Override
@@ -80,20 +101,25 @@ public class WebsocketServer extends WebSocketServer {
             case "bonus" : giveBonusPoints(request); break;
 
             case "continue": nextRound(request); break;
-        
+            case "quit": quitGame(request); break;
 
             default: System.out.printf("The action \"%s\" is not accounted for.\n", request.action);
         }
     }
 
+    private void quitGame(Request request) {
+        Game game = games.get(request.gameId);
+        game.quitGame();
+        games.remove(request.gameId);
+    }
+
     private void updatePlayerConnection(Request request) {
         if(request.action.equals("create") || request.action.equals("join")) return;
-        if(request.gameId == "" || request.name == "") return;
+        if(request.gameId.length() < 6) return;
+        if(request.name.equals("")) return;
         try {
             Game game = games.get(request.gameId);
-            if(game == null) {
-                throw new GameException("No game with code \"" + request.gameId +"\" exists!");
-            }
+            if(game == null) return;
             game.updateConnection(request.name, request.conn);
         } catch (GameException e) {
             sendResponse(request.conn, new Response(e.getMessage()));
@@ -107,6 +133,7 @@ public class WebsocketServer extends WebSocketServer {
     }
     
     private void getGameStatus(Request request) {
+        if(request.gameId.length() < 6) return;
         Game game = games.get(request.gameId);
         try {
             if(game == null) throw new GameException("No game with code \"" + request.gameId +"\" exists!");
@@ -117,17 +144,19 @@ public class WebsocketServer extends WebSocketServer {
     }
 
     private void createGame(Request request) {
+        request.verifyValues();
         request.gameId = generateID();
         while(games.containsKey(request.gameId)) request.gameId = generateID();
-        games.put(request.gameId, new Game(request.gameId));
+        games.put(request.gameId, new Game(request.gameId, request.max_timer, request.max_rounds));
         joinGame(request);
     }
 
     private void joinGame(Request request) {
         Game game = games.get(request.gameId);
         try {
-           game.addPlayer(request.conn, request.name); 
-           sendResponse(request.conn, new Response(request));
+            if(game == null) throw new GameException("No game with code \"" + request.gameId +"\" exists!");
+            game.addPlayer(request.conn, request.name); 
+            sendResponse(request.conn, new Response(request));
 
         } catch (GameException e) {
             sendResponse(request.conn, new Response(e.getMessage()));

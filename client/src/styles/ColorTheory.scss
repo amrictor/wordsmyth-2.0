@@ -9,7 +9,7 @@
     recommended 0.8+*/
         --border-threshold: 0.8;
     /*sets the background for the base class*/
-        background: rgb(var(--red), var(--green), var(--blue));
+        background: rgb(var(--red), var(--green), var(--blue)) !important;
     
         /* 
     Calcs perceived brightness using the 
@@ -27,16 +27,16 @@
     1) Any lightness value above the threshold will be considered "light", therefore apply a black text color. Any bellow will be considered dark, and use white color. 
     This results from appying either a sub-zero (negative) or a higher-than-100 lightness value, which are capped to 0 and 100 respectively, to a HSL declaration
     */
-        color: hsl(0, 0%, calc((var(--perceived-lightness) - var(--threshold)) * -10000000%));
+        color: hsl(0, 0%, calc((var(--perceived-lightness) - var(--threshold)) * -10000000%)) !important;
       
     /*
     2) sets the border as a 50% darker shade of the base color, ONLY if background color luma is higher than the border threshold.
     To achieve this I use the same sub-zero or higher-than-max technique, only this time using the Alpha value from an RGBA declaration. 
     This results in a border that's either fully transparent or fully opaque
     */
-        --border-alpha: calc((var(--perceived-lightness) - var(--border-threshold)) * 100);
+        --border-alpha: calc((var(--perceived-lightness) - var(--border-threshold)) * 100) !important;
         
         border-width: .2em;
         border-style: solid;
-        border-color: rgba(calc(var(--red) - 50), calc(var(--green) - 50), calc(var(--blue) - 50), var(--border-alpha));
+        border-color: rgba(calc(var(--red) - 50), calc(var(--green) - 50), calc(var(--blue) - 50), var(--border-alpha)) !important;
     }

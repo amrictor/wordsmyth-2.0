@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Wordsmyth from './components/Wordsmyth';
+import Wordsmyth from './containers/Wordsmyth';
 
 function App() {
   return (

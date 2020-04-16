@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 
 import org.java_websocket.WebSocket;
 
-public class Player {
+public class Player implements Comparable {
     private transient WebSocket connection;
     
     private String name;
@@ -95,6 +95,10 @@ public class Player {
         }
     }
 
+    public boolean isOnline() {
+        return this.connection.isOpen();
+    }
+
 	public void setConnection(WebSocket conn) {
         this.connection = conn;
     }
@@ -115,6 +119,15 @@ public class Player {
 	public void awardPoints(int i) {
         this.score += i;
 	}
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof Player)) { 
+            return -1; 
+        } 
+        Player comparePlayer = (Player) o;
+        return comparePlayer.score - this.score;
+    }
 
     
 }

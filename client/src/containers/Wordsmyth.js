@@ -39,7 +39,6 @@ class Wordsmyth extends Component {
         this.connection.onmessage = function (e) {
           // console.log('Server: ' + e.data);
             let comm = JSON.parse(e.data);
-            console.log(comm);
             this.handleServerCommunication(comm);
         }.bind(this);
     
@@ -56,7 +55,6 @@ class Wordsmyth extends Component {
         switch(comm.type) {
             case'status': this.setState({status: comm},  document.documentElement.style.setProperty('--buttonColor', this.state.status.color)); break;
             case'response': {
-                console.log(comm);
                 if(comm.message) {
                     if(comm.message.includes("No game with code") || comm.message.includes("Player does not exist")) {
                         this.setUser()
@@ -65,6 +63,14 @@ class Wordsmyth extends Component {
                 }
                 else this.setUser(comm);
             };  break;
+            case'time': {
+                this.setState({timer: { time: comm.time, total: comm.total}})
+                break;
+            }
+            case'quit': {
+                this.setUser()
+                break;
+            }
             default: alert(JSON.stringify(comm))
 
         }
@@ -72,9 +78,8 @@ class Wordsmyth extends Component {
 
     setUser(response) {
         let {playerName, gameId} = response ? response : {playerName : "", gameId: ""};
-
-
-        this.setCookie(playerName, gameId)
+ 
+        this.setCookie(playerName, gameId, 1)
         this.setState({playerName: playerName, gameId: gameId})
     }
 
@@ -97,11 +102,11 @@ class Wordsmyth extends Component {
         waitForSocketConnection(() => self.connection.send(JSON.stringify(obj)));
     }
 
-    setCookie(playerName, gameId, exdays=0) {
+    setCookie(playerName, gameId, exminutes=0) {
         console.log(playerName, gameId)
         var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = (exdays===0) ? "" : "expires="+d.toUTCString() + ";path=/";
+        d.setTime(d.getTime() + (exminutes * 60 * 1000));
+        var expires = (exminutes===0) ? "" : "max-age="+(exminutes * 60 * 1000) + ";path=/";
         document.cookie = "playerName=" + playerName + ";" + expires;
         document.cookie = "gameId=" + gameId + ";" + expires;
     }
@@ -172,16 +177,12 @@ class Wordsmyth extends Component {
         this.sendObject(request);
     }
 
-
-
     render() {
         if(this.state.status.player) return (
-            <Game status={this.state.status} sendObject={this.sendObject} playerName={this.state.playerName} gameId={this.state.gameId}/>        
+            <Game status={this.state.status} timer={this.state.timer} sendObject={this.sendObject} playerName={this.state.playerName} gameId={this.state.gameId}/>        
         );
         else return (
-            <div>
-                <Join sendObject={this.sendObject}/>
-            </div>
+            <Join sendObject={this.sendObject}/>
         );
     }
 } export default Wordsmyth;

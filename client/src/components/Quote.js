@@ -11,22 +11,30 @@ class Quote extends Component {
     render() {
         let {beginning, end, votes, publicPlayer, bonus} =  this.props.quote;
         let {player, phase} = this.props.status;
-        // votes = ["butts", "abby", "alex", "giovanna", "graham"]
+
         let className = "quoteBlock " + (votes ? "results" : "input");
         let quoteColor = publicPlayer ? getRGB(publicPlayer.color) : getRGB("#000000");
         return (
-            <div className={className} onClick={()=>this.props.sendRequest(this.props.quote)}>
-                <div className={`box ${publicPlayer && publicPlayer.judge ? "correct" : ""}`}  style={getRGB(publicPlayer?.color)}>
-                    {(player.judge || phase == 3) && bonus && <div className="bonus" title={publicPlayer && publicPlayer.name + " got a bonus point for creativity!"}><BonusPoint/></div>}
-                    <div className="quote">
-                        {publicPlayer && <div className="player">{publicPlayer.name}</div>}
-                        {beginning + "... " + end}
-                    </div>
+            <div className={className} >
+                <div className={'bonus_quote'}>
+                    <div className={`bonus ${(player.judge || phase == 3) && bonus ? "visible" : "hidden" }`} title={publicPlayer && publicPlayer.name + " got a bonus point for creativity!"}><BonusPoint/></div>
+                    <button 
+                        onClick={()=> phase === 3 || this.props.sendRequest(this.props.quote)}
+                        disabled={this.props.disabled || votes}
+                        className={`box ${publicPlayer && publicPlayer.judge ? "correct" : ""}`}  
+                        style={getRGB(publicPlayer?.color)}
+                    >
+                        <div className="quote">
+                            {publicPlayer && <div className="player">{publicPlayer.name}</div>}
+                            {beginning + "... " + end}
+                        </div>
+                    </button>
                 </div>
+                <div>
                 {votes && <div className="votes">
                     {votes.map(player => {
                         return (
-                            <div 
+                            <div
                                 title={publicPlayer.judge ? `${player.name} voted for the correct quote!`: `${player.name} voted for ${publicPlayer.name}'s quote!`}
                                 id={player.name + "_vote"} 
                                 className="vote" 
@@ -37,6 +45,7 @@ class Quote extends Component {
                     }
                     )}
                 </div>}
+                </div>
             </div>
         )
     }

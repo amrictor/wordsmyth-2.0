@@ -1,0 +1,17 @@
+.wordsmyth_input {
+    label {
+        font-size: 14px;
+    }
+    input {
+        border: 2px black solid;
+        margin: 5px 0px;
+        padding: 3px;
+        font-size: 18px;
+        width:100%;
+    }
+    .error {
+        color:red;
+    }
+    
+    // text-transform: uppercase
+}

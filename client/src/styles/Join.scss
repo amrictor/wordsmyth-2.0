@@ -2,16 +2,24 @@
 
 #join {
     max-width: 600px;
+    height: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     .nav {
         display: flex;
         justify-content: center;
         flex-wrap: 1;
+        margin: 20px;
+        margin-top: 0px;
         .navitem{ 
             padding: 20px;
             font-size: 25px;
             cursor: pointer;
             &.selected {
                 background: $buttonColor;
+                color: $buttonTextColor;
             }
             &:hover {
                 text-decoration: underline;
@@ -19,7 +27,27 @@
         }
     }
     #form {
+        * {
+            box-sizing: border-box;
+        }
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        .wordsmyth_input {
+            width:100%;
+        }
+        input, button {
+            width: 100%;
+        }
+        button {
+            align-self: center;
+            margin-top: 15px;
+        }
+        #params {
+            display: flex;
+        }
+        #gameid {
+            // text-transform: uppercase;
+        }
     }
 }
