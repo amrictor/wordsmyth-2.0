@@ -26,7 +26,7 @@ class Wordsmyth extends Component {
     }
 
     componentDidMount() {
-        this.connection = new WebSocket('ws://107.2.148.208:4444');
+        this.connection = new WebSocket('wss://107.2.148.208:4444');
         this.connection.onopen = function () {
             console.log('Connected!');
         };
