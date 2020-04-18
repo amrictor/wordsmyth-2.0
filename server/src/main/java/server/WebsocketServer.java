@@ -29,11 +29,7 @@ public class WebsocketServer extends WebSocketServer {
     public WebsocketServer() {
         super(new InetSocketAddress(TCP_PORT));
         games = new HashMap<>();
-
-        System.out.printf("Starting server on port %d\n", TCP_PORT); 
-
-        
-         garbageCollector = new TimerTask() {
+        garbageCollector = new TimerTask() {
             public void run() {
                 Iterator<Game> it = games.values().iterator();
                 while(it.hasNext()) {
@@ -49,6 +45,11 @@ public class WebsocketServer extends WebSocketServer {
         ); 
        
     }
+
+    @Override
+	public void onStart() {
+        System.out.printf("Starting server on port %d\n", TCP_PORT); 
+	}
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {

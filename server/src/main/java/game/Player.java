@@ -37,7 +37,6 @@ public class Player implements Comparable {
     }
 
     public void reset() {
-        System.out.println("RESETTING");
         this.quote = null;
         this.vote = null;
         this.judge = false;
@@ -85,8 +84,12 @@ public class Player implements Comparable {
     }
 
     public void sendObject(Object obj) {
+        
         Gson gson = new Gson();
         String json = gson.toJson(obj);
+        if(!(obj instanceof Time)) {
+          System.out.printf("Sending %s to %s\n", json, this.name);  
+        }
         try {
             this.connection.send(json);
         } catch (Exception e) {

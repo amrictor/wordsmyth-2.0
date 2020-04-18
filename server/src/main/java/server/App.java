@@ -26,7 +26,7 @@ public class App
         ks.load( new FileInputStream( kf ), STOREPASSWORD.toCharArray() );
 
         KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
-        kmf.init( ks, STOREPASSWORD.toCharArray() );
+        kmf.init( ks, KEYPASSWORD.toCharArray());
         TrustManagerFactory tmf = TrustManagerFactory.getInstance( "SunX509" );
         tmf.init( ks );
 
