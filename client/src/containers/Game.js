@@ -12,15 +12,40 @@ import { getRGB } from '../utilities/color'
 
 import "../styles/Game.scss"
 
+const helperText = {
+    '-1' : {
+        judge: "Waiting for more players to join!",
+        players:  "Waiting for more players to join!",
+        first: "Click start whenever you're ready!"
+    },
+    0 : {
+        judge: "Choose one of these real quotes! Your friends will make up their own endings for the one you choose!",
+        players: "Waiting for the judge to choose a quote now!"
+    },
+    1 : {
+        judge: "Waiting for your friends to write their own endings to the quote you've chosen!",
+        players: "Finish the quote! Try to make it realistic so you can fool your friends. Here's a hint: check your spelling and punctuation!"
+    },
+    2 : {
+        judge: "While you wait for your friends to guess the correct quote, feel free to award some bonus points for creativity!",
+        players: "Which quote do you think is the real one? Think carefully..."
+    },
+    3 : {
+        judge: "Let's see how everybody did!",
+        players: "Let's see how everybody did!",
+        first: "Click continue whenever you're ready!"
+    },
+    4 : {
+        judge: "Well done, everybody!",
+        players:  "Well done, everybody!"
+    },
+}
+
 class Game extends Component {
     constructor(props){
         super(props);
         this.sendRequest = this.sendRequest.bind(this);
     }
-
-    // const phases = {
-    //     -1 : ""
-    // }
 
     sendRequest(quote) {
         if(quote.target) quote ={}
@@ -37,9 +62,9 @@ class Game extends Component {
         if(quotes) {
             return (
                 <div>
-                    {quotes.length>0 
+                    {status.phase !== 0 && (quotes.length>0
                         ? <div id="quoteorigin"> There's an old {quotes[0].origin} saying: </div> 
-                        : <div id="emptyquotes"> Looks like no one submitted this round.<br/> Is everyone okay? </div>}
+                        : <div id="emptyquotes"> Looks like no one submitted this round.<br/> Is everyone okay? </div>)}
                     {this.displayQuotes(status)}
                 </div>
             )
@@ -58,7 +83,6 @@ class Game extends Component {
 
     render() {
         let { status , timer} = this.props;
-
         return (
             <div id="game">
                 <div id="header" style={getRGB(status.player.color)}>
@@ -80,19 +104,18 @@ class Game extends Component {
                     </div>
                     {timer && timer.time > 0 && <Timer timer={timer}/>}
                 </div>
-                
+                <div id="helperText">{helperText[status.phase][status.player.judge ? 'judge' : 'players']}</div>
                 {this.getRound(status)}
                 {status.phase===4 && 
                     <div id="winner">
                         <div style={getRGB(status.players[0].color)} className="player">
                             {status.players[0].name}
                         </div> 
-                        won! Well done, everyone!
+                        won!
                     </div>}
-                {!status.expectedRequest && <div id="waiting">Waiting to move to the next round!</div>}
                 {status.expectedRequest && (status.phase === -1 || status.phase === 3) 
                     && <div id="waiting">
-                            Let us know when you're ready to {status.expectedRequest.action}!
+                            {helperText[status.phase].first}
                             <button onClick={this.sendRequest}>{status.expectedRequest.action}</button>
                         </div>}
 

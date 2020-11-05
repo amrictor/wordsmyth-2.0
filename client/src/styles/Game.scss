@@ -60,6 +60,14 @@
         
     }
     
+    #helperText {
+        padding: 20px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 22px;
+    }
     #waiting {
         padding: 20px 20px 0px;
         display: flex;
@@ -92,7 +100,7 @@
     #quoteorigin {
         font-size: 25px;
         align-self: flex-start;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     #emptyquotes {
         font-size: 25px;

@@ -87,7 +87,7 @@ class Join extends Component {
                         label="Player's name"
                     />
                     <Input
-                        onChange={(event)=>this.setField("gameId", event.target.value)}
+                        onChange={(event)=>this.setField("gameId", event.target.value.toUpperCase())}
                         value={this.state.gameId}
                         type="text"
                         label="Room code"

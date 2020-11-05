@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Game  from './Game';
 import Join from './Join';
 
+import * as env from "../env.json"
 import "../styles/Wordsmyth.scss"
 
 class Wordsmyth extends Component {
@@ -26,35 +27,46 @@ class Wordsmyth extends Component {
     }
 
     componentDidMount() {
-        this.connection = new WebSocket('wss://107.2.148.208:4444');
-        this.connection.onopen = function () {
+        this.mounted = true;
+        const address = `ws${env.USE_WSS ? 's' : ''}://${env.SERVER_ADDRESS}`
+        this.connection = new WebSocket(address);
+        const onOpen = () => {
             console.log('Connected!');
-        };
-        // Log errors
-        this.connection.onerror = function (error) {
+        }
+        const onError = (error) => {
             console.log('WebSocket Error ' + error);
             alert("Cannot reach server!")
         };
-        // Log messages from the server
-        this.connection.onmessage = function (e) {
-          // console.log('Server: ' + e.data);
+        const onMessage = (e) => {
             let comm = JSON.parse(e.data);
             this.handleServerCommunication(comm);
-        }.bind(this);
-    
-        this.connection.onclose = function (e) {
-            console.log('Connection lost');
-            // this.setCookie("", "")
-          //THIS FUNCTION IS CALLED ON REFRESH IN FIREFOX BUT NOT CHROME
-          // DELETING COOKIES BREAKS FUNCTIONALITY IN FIREFOX
-        }.bind(this);
+        }
+        const onClose = () => {
+            if(this.mounted) {
+                this.connection = new WebSocket(address);
+                this.connection.onopen = onOpen;
+                this.connection.onerror = onError;
+                this.connection.onmessage = onMessage;
+                this.connection.onclose = onClose;
+            }
+            //THIS FUNCTION IS CALLED ON REFRESH IN FIREFOX BUT NOT CHROME
+            // DELETING COOKIES BREAKS FUNCTIONALITY IN FIREFOX
+        }
+        this.connection.onopen = onOpen;
+        this.connection.onerror = onError;
+        this.connection.onmessage = onMessage;
+        this.connection.onclose = onClose;
         this.checkCookie();
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     handleServerCommunication(comm) {
         switch(comm.type) {
             case'status': this.setState({status: comm},  document.documentElement.style.setProperty('--buttonColor', this.state.status.color)); break;
-            case'response': {
+            case'response': 
                 if(comm.message) {
                     if(comm.message.includes("No game with code") || comm.message.includes("Player does not exist")) {
                         this.setUser()
@@ -62,13 +74,14 @@ class Wordsmyth extends Component {
                     alert(comm.message);
                 }
                 else this.setUser(comm);
-            };  break;
+            ;  break;
             case'time': {
                 this.setState({timer: { time: comm.time, total: comm.total}})
                 break;
             }
             case'quit': {
-                this.setUser()
+                this.setUser();
+                window.location.reload();
                 break;
             }
             default: alert(JSON.stringify(comm))
@@ -90,7 +103,6 @@ class Wordsmyth extends Component {
                 function () {
                     if (self.connection.readyState === 1) {
                         if (callback != null){
-                            console.log(obj)
                             callback();
                         }
                     } else {
@@ -103,7 +115,6 @@ class Wordsmyth extends Component {
     }
 
     setCookie(playerName, gameId, exminutes=0) {
-        console.log(playerName, gameId)
         var d = new Date();
         d.setTime(d.getTime() + (exminutes * 60 * 1000));
         var expires = (exminutes===0) ? "" : "max-age="+(exminutes * 60 * 1000) + ";path=/";
@@ -129,7 +140,6 @@ class Wordsmyth extends Component {
     checkCookie() {
         let playerName = this.getCookie("playerName");
         let gameId = this.getCookie("gameId");
-        console.log(playerName, gameId)
         if (playerName !== undefined) {
             this.setState({playerName: playerName, gameId: gameId}, this.requestStatus);
         }

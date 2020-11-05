@@ -1,7 +1,12 @@
 /client/package-lock.json
 /client/node_modules
+/client/src/env.json
 
 /server/.settings
 /server/target
+/server/tokens
+/server/env.json
+/server/src/main/resources/credentials.json
+/server/keystore.jks
 
 /.vscode

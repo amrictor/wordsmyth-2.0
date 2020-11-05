@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,13 +37,14 @@ public class Game {
     // private short phase = -1;
 
     private Quote[] allQuotes;
+    private boolean[] usedQuotes; 
 
     GameStatus status;
 
     // public Game(String id) {
     //     this(id, (short)60, (short)3);
     // }
-    public Game(String id, short timer, short rounds) {
+    public Game(String id, short timer, short rounds, Quote[] quotes) {
         this.id = id;
         this.MAX_TIMER = timer;
         this.MAX_ROUNDS = rounds;
@@ -56,8 +54,8 @@ public class Game {
         Collections.shuffle(colors);
         colorIterator = colors.iterator();
         gameColor = colorIterator.next();
-
-        readFile("sourceQuotes.txt");
+        allQuotes = quotes;
+        usedQuotes = new boolean[quotes.length];
         System.out.printf("New game created with id %s. There will be %d rounds with a timer starting at %d.\n", this.id, this.MAX_ROUNDS, this.MAX_TIMER);
     }
 
@@ -211,33 +209,14 @@ public class Game {
         Quote[] quoteChoices = new Quote[3];
         for(int i = 0; i<quoteChoices.length; i++) {
             int index = random.nextInt(allQuotes.length);
-            while(allQuotes[index].used) {
+            while(usedQuotes[index]) {
                 System.out.println("Can't use \"" + allQuotes[index].beginning+" "+ allQuotes[index].end + "\"");
                 index = random.nextInt(allQuotes.length);
             }
             quoteChoices[i] = allQuotes[index];
-            allQuotes[index].used = true;
+            usedQuotes[index] = true;
         }
         return quoteChoices;
-    }
-
-    public void readFile(String filename) {        
-        try {
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename),
-                            Charset.defaultCharset()));
-            int numQuotes = Integer.parseInt(bufferedReader.readLine());
-            this.allQuotes = new Quote[numQuotes];
-            for (int i = 0; i < numQuotes; i++) {
-                this.allQuotes[i]=  new Quote(bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace());
-        }
-        System.out.println("Read in quotes:");
-        for(Quote quote : allQuotes) {
-            System.out.println(quote);
-        }
     }
 
 	public void giveBonus(String name, Quote quote) throws GameException {

@@ -25,16 +25,21 @@ public class WebsocketServer extends WebSocketServer {
     private TimerTask garbageCollector;
     private Timer timer = new Timer();
     private Map<String, Game> games; 
+    private Quote[] quotes;
 
     public WebsocketServer() {
         super(new InetSocketAddress(TCP_PORT));
+        quotes = new QuoteReader().getQuotes();
         games = new HashMap<>();
         garbageCollector = new TimerTask() {
             public void run() {
                 Iterator<Game> it = games.values().iterator();
                 while(it.hasNext()) {
                     Game g = it.next();
-                    if(!g.checkConnections()) it.remove();
+                    if(!g.checkConnections()) {
+                        g.cancelTimer();
+                        it.remove();
+                    }
                 }
             }
         };
@@ -148,7 +153,7 @@ public class WebsocketServer extends WebSocketServer {
         request.verifyValues();
         request.gameId = generateID();
         while(games.containsKey(request.gameId)) request.gameId = generateID();
-        games.put(request.gameId, new Game(request.gameId, request.max_timer, request.max_rounds));
+        games.put(request.gameId, new Game(request.gameId, request.max_timer, request.max_rounds, quotes));
         joinGame(request);
     }
 

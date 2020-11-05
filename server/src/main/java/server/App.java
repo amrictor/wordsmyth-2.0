@@ -2,19 +2,33 @@ package server;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.security.KeyStore;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import com.google.gson.Gson;
+
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 
-public class App
-{
-    public static void main(String[] args) throws Exception {
-        WebsocketServer wss = new WebsocketServer();
+public class App {
 
+    private static Environment readEnvironment() {
+      try (FileReader reader = new FileReader("env.json")) {
+        Gson gson = new Gson();
+        return gson.fromJson(reader, Environment.class);
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+    public static void main(String[] args) throws Exception {
+      WebsocketServer wss = new WebsocketServer();
+
+      if (readEnvironment().USE_WSS) {
         // load up the key store
         String STORETYPE = "JKS";
         String KEYSTORE = "keystore.jks";
@@ -35,7 +49,7 @@ public class App
         sslContext.init( kmf.getKeyManagers(), tmf.getTrustManagers(), null );
 
         wss.setWebSocketFactory( new DefaultSSLWebSocketServerFactory( sslContext ) );
-
-        wss.start();
       }
+      wss.start();
+    }
 }

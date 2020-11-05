@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import "../styles/Quote.scss";
 import { getRGB } from '../utilities/color'
+import { MdGavel as CurrentPlayer } from 'react-icons/md'
 
 import { FaThumbsUp as BonusPoint } from 'react-icons/fa'
 
@@ -9,15 +10,14 @@ class Quote extends Component {
    
 
     render() {
-        let {beginning, end, votes, publicPlayer, bonus} =  this.props.quote;
+        let {beginning, end, votes, origin, publicPlayer, bonus} =  this.props.quote;
         let {player, phase} = this.props.status;
 
         let className = "quoteBlock " + (votes ? "results" : "input");
-        let quoteColor = publicPlayer ? getRGB(publicPlayer.color) : getRGB("#000000");
         return (
             <div className={className} >
                 <div className={'bonus_quote'}>
-                    <div className={`bonus ${(player.judge || phase == 3) && bonus ? "visible" : "hidden" }`} title={publicPlayer && publicPlayer.name + " got a bonus point for creativity!"}><BonusPoint/></div>
+                    <div className={`bonus ${(player.judge || phase === 3) && bonus ? "visible" : "hidden" }`} title={publicPlayer && publicPlayer.name + " got a bonus point for creativity!"}><BonusPoint/></div>
                     <button 
                         onClick={()=> phase === 3 || this.props.sendRequest(this.props.quote)}
                         disabled={this.props.disabled || votes}
@@ -25,7 +25,15 @@ class Quote extends Component {
                         style={getRGB(publicPlayer?.color)}
                     >
                         <div className="quote">
-                            {publicPlayer && <div className="player">{publicPlayer.name}</div>}
+                            {publicPlayer && <div className="player">
+                                {publicPlayer.name}
+                                <span 
+                                    className="judge" 
+                                    style={{visibility: (publicPlayer.judge ? "visible" : "hidden")}}
+                                ><CurrentPlayer/></span>
+                                </div>}
+
+                                {phase===0 && <div className="origin">{origin}</div>}
                             {beginning + "... " + end}
                         </div>
                     </button>

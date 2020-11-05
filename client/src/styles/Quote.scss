@@ -15,7 +15,9 @@
 .quoteBlock {
     &.input {
         .box {
-            
+            &:disabled {
+                background: rgb(212, 140, 140)
+            }
             &:hover, :focus {
                 background: $buttonColor;
                 color: $buttonTextColor;
@@ -62,8 +64,21 @@
             .quote {
                 font-size: 20px;
                 text-align: center;
-                .player {
+                .origin {
                     font-style: italic;
+                }
+                .player {
+                    display: flex;
+                    justify-content: center;
+                    font-style: italic;
+                    padding-left: 25px;
+                    .judge {
+                        width: 20px !important;
+                        margin: 2px 6px;
+                        svg { 
+                            margin: auto;
+                        }
+                    }
                 }
             }
         }
