@@ -2,7 +2,6 @@ package server;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.security.KeyStore;
 
@@ -32,8 +31,8 @@ public class App {
         // load up the key store
         String STORETYPE = "JKS";
         String KEYSTORE = "keystore.jks";
-        String STOREPASSWORD = "storepassword";
-        String KEYPASSWORD = "keypassword";
+        String STOREPASSWORD = "password";
+        String KEYPASSWORD = "password";
 
         KeyStore ks = KeyStore.getInstance( STORETYPE );
         File kf = new File( KEYSTORE );
