@@ -3,6 +3,7 @@ package server.status;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -75,13 +76,14 @@ public class GameStatus {
         else if(phase==4) { //endgame
             this.playerQuotes = null;
             this.expectedRequest = new Request(gameId, "quit");
-            Arrays.sort(this.players);
         }
+        Arrays.sort(this.players);
     }
 
     public GameStatus(String gameId, Player[] players, String color) {
         this.gameId = gameId;
         this.players = players;
+        Arrays.sort(players);
         this.color = color;
     }
 

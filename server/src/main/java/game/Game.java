@@ -118,6 +118,7 @@ public class Game {
     public void addPlayer(WebSocket conn, String playerName) throws GameException {
         if(status != null && status.getPhase() > -1) throw new GameException("Game in progress!");
         if(this.players.containsKey(playerName)) throw new GameException("Duplicate player name!");
+        if(!playerName.trim().matches("[A-Za-z0-9.\\-_@$]{1,20}")) throw new GameException("Please choose a different name no longer than 20 characters, using A-Z, 0-9, and/or the following special characters: -, _, @, $");
 
         this.players.put(playerName, new Player(conn, playerName, this.players.size()==0, colorIterator.next()));
         this.status = new GameStatus(id, players.values().toArray(new Player[players.size()]), gameColor);
@@ -125,7 +126,7 @@ public class Game {
         printPlayers();
     }
 
-    public void removePlayer(String playerName) throws GameException{
+    public void removePlayer(String playerName) throws GameException {
         if(status.getPhase() > -1) throw new GameException("Game in progress!");
         players.remove(playerName);
         this.status = new GameStatus(id, players.values().toArray(new Player[players.size()]), gameColor);
@@ -133,7 +134,8 @@ public class Game {
         System.out.printf("Removed %s from game %s\n", playerName, this.id);
     }
 
-    public void startGame() {
+    public void startGame() throws GameException {
+        if(players.size() < 3) throw new GameException("You need at least three players to start, and probably four or five to have some real fun!");
         this.playerOrder = new CircularList<Player>(new ArrayList<Player>(players.values())).iterator();
         startRound();
     }

@@ -181,7 +181,11 @@ public class WebsocketServer extends WebSocketServer {
 
     private void startGame(Request request) {
         Game game = games.get(request.gameId);
-        game.startGame();
+        try {
+            game.startGame();
+        } catch(GameException e) {
+            sendResponse(request.conn, new Response(e.getMessage()));
+        }
     }
     
     private void selectQuote(Request request) {

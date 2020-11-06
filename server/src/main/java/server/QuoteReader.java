@@ -55,7 +55,7 @@ public class QuoteReader {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(3000).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
@@ -63,7 +63,7 @@ public class QuoteReader {
         try {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             final String spreadsheetId = "1gfwQJLbShqGQx72RBsGK0k7A2Rk965ISylQ9f45xbVM";
-            final String range = "quotes!A1:C256";
+            final String range = "quotes";
             Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                     .setApplicationName(APPLICATION_NAME)
                     .build();
@@ -71,15 +71,15 @@ public class QuoteReader {
                     .get(spreadsheetId, range)
                     .execute();
             List<List<Object>> values = response.getValues();
-            Quote[] quotes = new Quote[values.size()];
+            int size = Integer.parseInt(values.get(1).get(3).toString());
+            Quote[] quotes = new Quote[size];
             if (values == null || values.isEmpty()) {
                 System.out.println("No data found.");
             } else {
-                for (int i = 0; i<quotes.length; i++) {
+                for (int i = 0; i<size; i++) {
                     List<Object> row = values.get(i);
                     System.out.println(row);
                     quotes[i] = new Quote((String) row.get(0), (String) row.get(1), (String) row.get(2));
-                    // Print columns A and E, which correspond to indices 0 and 4.
                     System.out.println(quotes[i]);
                 }
                 return quotes;
